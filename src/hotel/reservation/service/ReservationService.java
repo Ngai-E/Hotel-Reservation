@@ -49,7 +49,7 @@ public class ReservationService {
         return newReservation;
     }
 
-    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
+    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate, int recommended){
         Collection<IRoom> availableRooms = rooms.values();
         Collection<IRoom> recommendedRooms = rooms.values();
         
@@ -63,7 +63,7 @@ public class ReservationService {
                 recommendedRooms.remove(room);
             }
             
-            calendarCheckin.add(Calendar.DAY_OF_MONTH, RECOMMENDED_SEARCH_DAYS);
+            calendarCheckin.add(Calendar.DAY_OF_MONTH, recommended == -1 ? RECOMMENDED_SEARCH_DAYS : recommended);
             calendarCheckin.setTime(checkInDate);
             
             System.out.println(calendarCheckin + "***");
@@ -73,6 +73,10 @@ public class ReservationService {
         }
         
         return availableRooms.size() > 0 ? availableRooms : recommendedRooms;
+    }
+
+    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
+        return  findRooms(checkInDate, checkOutDate, -1);
     }
     
     public Collection<Reservation> getCustomersReservation(Customer customer) {

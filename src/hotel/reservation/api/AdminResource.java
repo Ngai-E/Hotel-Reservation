@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class AdminResource {
 
-    private AdminResource adminResource;
+    private static AdminResource adminResource;
     private CustomerService customerService;
     private ReservationService reservationService;
 
@@ -44,7 +44,7 @@ public class AdminResource {
         reservationService.printAllReservation();
     }
 
-    public AdminResource getInstance() {
+    public static AdminResource getInstance() {
         if (adminResource == null) {
             synchronized (AdminResource.class) {
                 if (adminResource == null) {

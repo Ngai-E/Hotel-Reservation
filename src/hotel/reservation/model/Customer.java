@@ -5,6 +5,9 @@
  */
 package hotel.reservation.model;
 
+import hotel.reservation.utils.PatternsString;
+import hotel.reservation.utils.PatternsString;
+
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,9 +20,8 @@ public class Customer {
     private String firstName;
     private String lastName;
     private String email;
-    
-    private static final String EMAIL_PATTERN = "^(.+)@(.+).(.+)$";
-    private static final Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+
+    private static final Pattern pattern = Pattern.compile(PatternsString.EMAIL_PATTERN);
     
     public Customer(String firstname, String lastname, String email) {
         Matcher matcher = pattern.matcher(email);

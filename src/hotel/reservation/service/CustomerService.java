@@ -6,6 +6,9 @@
 package hotel.reservation.service;
 
 import hotel.reservation.model.Customer;
+import hotel.reservation.utils.CommonMessages;
+import hotel.reservation.utils.Utilities;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +26,9 @@ public class CustomerService {
     public void addCustomer(String email, String firstName, String lastName) {
         try {
             CUSOTMERS.put(email, new Customer(firstName, lastName, email));
+            System.out.println(CommonMessages.CUSTOMER_CREATED);
         } catch (Exception e) {
-            System.out.println("FAILED CREATING CUSTOMER");
+            System.out.println(CommonMessages.CUSTOMER_CREAT_FAILED);
         }
     }
     

@@ -11,5 +11,4 @@ package hotel.reservation.model.types;
  */
 public enum RoomType {
     SINGLE, DOUBLE;
-    
 }

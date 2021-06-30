@@ -48,12 +48,16 @@ public class HotelResource {
             Customer customer = customerService.getCustomer(customerEmail);
             return reservationService.getCustomersReservation(customer);
         }
-        
-        public Collection<IRoom> findARoom(Date checkIn, Date checkOut){
-            return reservationService.findRooms(checkIn, checkOut);
-        }
-        
-        public HotelResource getInstance() {
+
+    public Collection<IRoom> findARoom(Date checkIn, Date checkOut){
+        return reservationService.findRooms(checkIn, checkOut);
+    }
+
+    public Collection<IRoom> findARoom(Date checkIn, Date checkOut, int rec){
+        return reservationService.findRooms(checkIn, checkOut, rec);
+    }
+
+        public static HotelResource getInstance() {
         if (hotelResource == null) {
             synchronized (HotelResource.class) {
                 if (hotelResource == null) {
@@ -65,5 +69,5 @@ public class HotelResource {
 
         return hotelResource;
     }
-    
+
 }
