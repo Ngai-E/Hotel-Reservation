@@ -77,6 +77,8 @@ public class HotelReservation {
         customerEmail = getCustomerInfo(customerEmail);
         Collection<Reservation> reservations = hotelResource.getCustomersReservations(customerEmail);
 
+        if(reservations.size() == 0)
+            System.out.println(CommonMessages.RESERVATIONS_EMPTY);
         for (Reservation reservation: reservations) {
             System.out.println(reservation.toString());
         }
@@ -181,12 +183,66 @@ public class HotelReservation {
                 System.out.println(room.toString());
             }
 
+            if (rooms.size() > 0) {
+                reserveRoom();
+            } else {
+                System.out.println(CommonMessages.ROOMS_EMPTY);
+            }
+
         } catch (Exception ex) {
             System.out.println(CommonMessages.ERROR_SYSTEM_ERROR);
         }
 
         presentHotelPrompt();
 
+    }
+
+    private static void reserveRoom() {
+        String wantToReserve =  CommonMessages.ROOM_RESERVATION_COMMAND;
+        String[] reserveIntructions = new String[] {
+                CommonMessages.ENTER_EMAIL,
+                CommonMessages.ENTER_ROOM_NUMBER,
+                CommonMessages.ENTER_CHECKIN_DATE,
+                CommonMessages.ENTER_CHECKOUT_DATE
+        };
+
+        String customerEmail, checkinDate, checkoutDate, roomNumber;
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(wantToReserve);
+        String input = scanner.next();
+
+        if (input.equals("1")) {
+            for (int i = 0; i < reserveIntructions.length; i++) {
+
+                System.out.println(reserveIntructions[i]);
+
+                if (input.equals("")) {
+                    i--;
+                    System.out.println(CommonMessages.INVALID_INPUT_CANNOT_BE_EMPTY);
+                    continue;
+                }
+
+                switch (i) {
+                    case 0:
+                        if (!Utilities.isValidEmail(input)) {
+                            i--;
+                            System.out.println(CommonMessages.INVALID_EMAIL);
+                            break;
+                        }
+                        customerEmail = input;
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                }
+            }
+        }
+        System.out.println(CommonMessages.COMMAND_NOT_RECOGNISED);
+        reserveRoom();
     }
 
     private static  void createAccount() {

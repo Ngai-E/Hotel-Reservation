@@ -18,11 +18,15 @@ public class CommonMessages {
     public static final String ENTER_EMAIL = "Enter your email address";
     public static final String CUSTOMER_CREATED = "CUSTOMER CREATED SUCCESSFULLY";
     public static final String CUSTOMER_CREAT_FAILED = "FAILED CREATING CUSTOMER";
+    public static final String RESERVATIONS_EMPTY = "No reservations yet!!";
 
     //find room
     public static final String ENTER_CHECKIN_DATE = "Enter desired check in date (mm/dd/yyyy)";
     public static final String ENTER_CHECKOUT_DATE = "Enter desired check out date (mm/dd/yyyy)";
     public static final String ENTER_RECOMMENDED_SEARCH_DAYS = "Enter recommended search days (default is 7 days) or enter to continue";
+    public static final String ROOMS_EMPTY = "No rooms available";
+    public static final String ROOM_RESERVATION_COMMAND = "Enter 1 to reserve or 0 to exit";
+    public static final String ENTER_ROOM_NUMBER = "Enter desired Room Number";
 
     //separators
     public static final String COLON_SEPARATOR = ":";
@@ -37,5 +41,7 @@ public class CommonMessages {
     public static final String ERROR_SYSTEM_ERROR = "System error occurred";
     public static final String INVALID_EMAIL = "Input must enter a valid email";
     public static  final String ERROR_ACCOUNT_DOES_NOT_EXIST = "Account does not exist!!";
+    public static final String COMMAND_NOT_RECOGNISED = "Command not recognised!";
+
 
 }
