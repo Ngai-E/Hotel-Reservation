@@ -9,6 +9,8 @@ import hotel.reservation.model.Customer;
 import hotel.reservation.model.IRoom;
 import hotel.reservation.service.CustomerService;
 import hotel.reservation.service.ReservationService;
+import hotel.reservation.utils.CommonMessages;
+
 import java.util.Collection;
 import java.util.List;
 

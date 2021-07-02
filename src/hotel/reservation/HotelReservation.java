@@ -5,18 +5,19 @@
  */
 package hotel.reservation;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import hotel.reservation.UI.AdminMenu;
 import hotel.reservation.UI.MainMenu;
 import hotel.reservation.api.AdminResource;
 import hotel.reservation.api.HotelResource;
 import hotel.reservation.model.Customer;
 import hotel.reservation.model.IRoom;
 import hotel.reservation.model.Reservation;
+import hotel.reservation.model.Room;
+import hotel.reservation.model.types.RoomType;
 import hotel.reservation.utils.CommonMessages;
 import hotel.reservation.utils.PatternsString;
 import hotel.reservation.utils.Utilities;
@@ -62,6 +63,7 @@ public class HotelReservation {
                     break;
                 case "4":
                        System.out.printf("******** %s ********", MainMenu.getMenuItemAtIndex(3));
+                       presentHotelAdminPrompt();
                     break;
                 case "5":
                 default:
@@ -71,7 +73,106 @@ public class HotelReservation {
 
         System.out.println(CommonMessages.GOODBYE_MESSAGE);
     }
+    private static void presentHotelAdminPrompt() {
+        AdminMenu.printAdminMenu();
 
+        Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
+
+        do {
+            switch (scanner.next()) {
+                case "1":
+                    System.out.printf("******** %s ********", AdminMenu.getMenuItemAtIndex(0));
+                    seeAllCustomers();
+                    break;
+                case "2":
+                    System.out.printf("******** %s ********", AdminMenu.getMenuItemAtIndex(1));
+                    seeAllReservations();
+                    break;
+                case "3":
+                    System.out.printf("******** %s ********", AdminMenu.getMenuItemAtIndex(2));
+                    addARoom();
+                    break;
+                case "4":
+                default:
+                    presentHotelPrompt();
+            }
+        } while (!exit);
+
+    }
+
+    private static void addARoom() {
+        String roomNumber = null;
+        String price = null;
+        RoomType roomType = null;
+
+        List<IRoom> rooms = new ArrayList<>();
+
+        String[] instructions = new String[]{
+                CommonMessages.ENTER_ROOM_NUMBER,
+                CommonMessages.ENTER_ROOM_PRICE,
+                CommonMessages.ENTER_TYPE
+        };
+
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        for (int i = 0; i < instructions.length; i++) {
+            System.out.println("\n" + instructions[i]);
+            input = scanner.next();
+            switch (i) {
+                case 0:
+                    IRoom room = hotelResource.getRoom(input);
+                    if (room != null) {
+                        i--;
+                        System.out.println(CommonMessages.ROOM_EXIST);
+                        break;
+                    }
+                    roomNumber = input;
+                    break;
+                case 1:
+                    if (!Utilities.isValidDouble(input)) {
+                        i--;
+                        System.out.println(CommonMessages.INVALID_INPUT);
+                        break;
+                    }
+                    price = input;
+                    break;
+                case 2:
+                    if (!input.equals("1") || !input.equals("2")) {
+                        i--;
+                        System.out.println(CommonMessages.INVALID_ROOM_TYPE);
+                        break;
+                    }
+
+                    roomType = input.equals("1") ? RoomType.SINGLE : RoomType.DOUBLE;
+                    break;
+            }
+        }
+        IRoom room = new Room(roomNumber, Double.parseDouble(price), roomType);
+        rooms.add(room);
+        adminResource.addRoom(rooms);
+
+        presentHotelPrompt();
+    }
+
+    private static void seeAllReservations() {
+        adminResource.displayAllReservations();
+    }
+
+    private static void seeAllCustomers() {
+        Collection<Customer> allCustomers = adminResource.getAllCustomers();
+        if (allCustomers.size() == 0) {
+            System.out.println(CommonMessages.NO_ACCOUNTS_CREATED);
+        } else {
+            for (Customer customer :
+                    allCustomers) {
+                System.out.println(customer.toString());
+            }
+        }
+    }
+
+
+    //<editor-fold defaultstate="collapsed" desc="[ helper functions ]">
     private static void seeReservations() {
         String customerEmail = null;
         customerEmail = getCustomerInfo(customerEmail);
@@ -133,12 +234,6 @@ public class HotelReservation {
             System.out.println("\n" +roomInstructions[i]);
 
             input = scanner.next();
-
-            if (input.equals(CommonMessages.EMPTY_STRING) && i != 2){
-                System.out.println(CommonMessages.INVALID_INPUT_CANNOT_BE_EMPTY);
-                i--;
-                continue;
-            }
 
             switch (i) {
                 case 0:
@@ -207,6 +302,7 @@ public class HotelReservation {
         };
 
         String customerEmail, checkinDate, checkoutDate, roomNumber;
+        customerEmail = checkinDate = checkoutDate = roomNumber = "";
 
         Scanner scanner = new Scanner(System.in);
         System.out.println(wantToReserve);
@@ -217,12 +313,6 @@ public class HotelReservation {
 
                 System.out.println(reserveIntructions[i]);
 
-                if (input.equals("")) {
-                    i--;
-                    System.out.println(CommonMessages.INVALID_INPUT_CANNOT_BE_EMPTY);
-                    continue;
-                }
-
                 switch (i) {
                     case 0:
                         if (!Utilities.isValidEmail(input)) {
@@ -230,15 +320,49 @@ public class HotelReservation {
                             System.out.println(CommonMessages.INVALID_EMAIL);
                             break;
                         }
+                        Customer customer = hotelResource.getCustomer(input);
+                        if (customer == null) {
+                            System.out.println(CommonMessages.ERROR_ACCOUNT_DOES_NOT_EXIST);
+                            presentHotelPrompt();
+                            break;
+                        }
                         customerEmail = input;
                         break;
                     case 1:
+                        IRoom room = hotelResource.getRoom(input);
+                        if (room == null) {
+                            System.out.println(CommonMessages.ROOM_DOES_NOT_EXIST);
+                        }
+                        roomNumber = input;
                         break;
                     case 2:
+                        if (!Utilities.isValidDateStringSlashSeparated(input)) {
+                            i--;
+                            System.out.println(CommonMessages.INVALID_INPUT_DATE);
+                            break;
+                        }
+                        checkinDate = input;
                         break;
                     case 3:
+                        if (!Utilities.isValidDateStringSlashSeparated(input)) {
+                            i--;
+                            System.out.println(CommonMessages.INVALID_INPUT_DATE);
+                            break;
+                        }
+                        checkoutDate = input;
                         break;
                 }
+            }
+
+            try {
+                Date chkindate = Utilities.getDateFormatter().parse(checkinDate);
+                Date chkoutdate = Utilities.getDateFormatter().parse(checkoutDate);
+
+                hotelResource.bookARoom(customerEmail, hotelResource.getRoom(roomNumber), chkindate, chkoutdate );
+
+                System.out.println(CommonMessages.ROOM_RESERVED_SUCCESSFULLY);
+            } catch (Exception ex){
+                System.out.println(CommonMessages.ERROR_SYSTEM_ERROR);
             }
         }
         System.out.println(CommonMessages.COMMAND_NOT_RECOGNISED);
@@ -261,11 +385,6 @@ public class HotelReservation {
         for (int i = 0; i < instructions.length; i++) {
             System.out.println("\n" + instructions[i]);
             input = scanner.next();
-            if (input.equals(CommonMessages.EMPTY_STRING)) {
-                System.out.println(CommonMessages.INVALID_INPUT_CANNOT_BE_EMPTY);
-                i--;
-                continue;
-            }
             switch (i){
                 case 0:
                     firstName = input;
@@ -283,6 +402,7 @@ public class HotelReservation {
 
         presentHotelPrompt();
     }
+    //</editor-fold>"
 
     //</editor-fold>
 }

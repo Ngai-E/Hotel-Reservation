@@ -17,6 +17,12 @@ public class Room implements IRoom{
     private Double price;
     private RoomType roomType;
 
+    public Room(String roomNumber, Double price, RoomType roomType) {
+        this.roomNumber = roomNumber;
+        this.price = price;
+        this.roomType = roomType;
+    }
+
     @Override
     public String getRoomNumber() {
         return this.roomNumber;
@@ -36,7 +42,7 @@ public class Room implements IRoom{
     public String toString() {
         return "Room #" + roomNumber + ", price is " + price + " - " + roomType.name();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

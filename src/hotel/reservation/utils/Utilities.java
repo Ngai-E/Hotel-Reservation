@@ -29,6 +29,13 @@ public class Utilities {
         return numberMatcher.find();
     }
 
+    public static  boolean isValidDouble(String str){
+        Pattern doublePattern = Pattern.compile(PatternsString.DOUBLE_NUMBER_FORMAT);
+        Matcher doubleMatcher = doublePattern.matcher(str);
+
+        return doubleMatcher.find();
+    }
+
     public static SimpleDateFormat getDateFormatter() {
         return new SimpleDateFormat(DATE_FORMATER);
 

@@ -8,6 +8,8 @@ package hotel.reservation.service;
 import hotel.reservation.model.Customer;
 import hotel.reservation.model.IRoom;
 import hotel.reservation.model.Reservation;
+import hotel.reservation.utils.CommonMessages;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -91,6 +93,9 @@ public class ReservationService {
     }
 
     public void printAllReservation() {
+        if (reservations.size() == 0) {
+            System.out.println(CommonMessages.NO_RESERVATIONS);
+        }
         for (Reservation reservation : reservations) {
             System.out.println(reservation);
         }

@@ -5,6 +5,8 @@
  */
 package hotel.reservation.UI;
 
+import hotel.reservation.utils.CommonMessages;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +18,11 @@ public class AdminMenu {
 
     private static List<String> menuItems = new ArrayList<String>() {
         {
-            add("See all Customers");
-            add("See all Rooms");
-            add("See all Reservations");
-            add("Add a Room");
-            add("Back to Main Menu");
+            add(CommonMessages.SEE_ALL_CUSTOMERS);
+            add(CommonMessages.SEE_ALL_ROOMS);
+            add(CommonMessages.SEE_ALL_RESERVATION);
+            add(CommonMessages.ADD_A_ROOM);
+            add(CommonMessages.BACK_TO_MAIN_MENU);
         }
     };
 
