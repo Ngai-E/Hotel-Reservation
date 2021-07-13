@@ -55,6 +55,8 @@ public class CommonMessages {
     public static final String COMMAND_NOT_RECOGNISED = "Command not recognised!";
     public static final String INVALID_INPUT = "Input is invalid";
     public static final String INVALID_ROOM_TYPE = "Room type is invalid";
+    public static final String BACK_COMMAND = "88: Back";
+    public static final String DATE_CHECKOUT_GREATER_THAN_DATE_CHECKIN = "Check in date must be greater thant checkout date";
 
 
     public static final String  ROOM_DOES_NOT_EXIST = "Room does not exist";

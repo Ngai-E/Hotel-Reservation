@@ -21,8 +21,13 @@ import java.util.List;
 public class AdminResource {
 
     private static AdminResource adminResource;
-    private CustomerService customerService;
-    private ReservationService reservationService;
+    private  CustomerService customerService;
+    private  ReservationService reservationService;
+
+    private AdminResource() {
+        this.customerService = new CustomerService();
+        this.reservationService = new ReservationService();
+    }
 
     public Customer getCustomer(String email) {
         return customerService.getCustomer(email);

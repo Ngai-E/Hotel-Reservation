@@ -6,6 +6,8 @@
 package hotel.reservation.model;
 
 
+import hotel.reservation.model.types.RoomType;
+
 /**
  *
  * @author E.Ngai
@@ -13,8 +15,9 @@ package hotel.reservation.model;
 public class FreeRoom extends Room{
     private Double price;
     
-    public FreeRoom() {
-        this.price = new Double(0);
+    public FreeRoom(String roomNumber, RoomType roomType) {
+        super(roomNumber, Double.valueOf(0), roomType);
+        this.price = super.getRoomPrice();
     }
     
     @Override

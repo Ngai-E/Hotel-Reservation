@@ -23,12 +23,13 @@ import hotel.reservation.utils.PatternsString;
 import hotel.reservation.utils.Utilities;
 
 /**
- *
  * @author E.Ngai
  */
 public class HotelReservation {
-    static  HotelResource hotelResource = HotelResource.getInstance();
-    static  AdminResource adminResource = AdminResource.getInstance();
+
+    static HotelResource hotelResource = HotelResource.getInstance();
+    static AdminResource adminResource = AdminResource.getInstance();
+
     /**
      * @param args the command line arguments
      */
@@ -38,7 +39,6 @@ public class HotelReservation {
     }
 
     //<editor-fold defaultstate="collapsed" desc="[ PRIVATE METHODS ]">
-
     private static void presentHotelPrompt() {
         System.out.println(CommonMessages.WELCOME_MESSAGE);
 
@@ -50,20 +50,20 @@ public class HotelReservation {
         do {
             switch (scanner.next()) {
                 case "1":
-                       System.out.printf("******** %s ********", MainMenu.getMenuItemAtIndex(0));
-                       findRoom();
+                    System.out.printf("******** %s ********\n", MainMenu.getMenuItemAtIndex(0));
+                    findRoom();
                     break;
                 case "2":
-                       System.out.printf("******** %s ********", MainMenu.getMenuItemAtIndex(1));
-                       seeReservations();
+                    System.out.printf("******** %s ********\n", MainMenu.getMenuItemAtIndex(1));
+                    seeReservations();
                     break;
                 case "3":
-                       System.out.printf("******** %s ********", MainMenu.getMenuItemAtIndex(2));
-                       createAccount();
+                    System.out.printf("******** %s ********\n", MainMenu.getMenuItemAtIndex(2));
+                    createAccount();
                     break;
                 case "4":
-                       System.out.printf("******** %s ********", MainMenu.getMenuItemAtIndex(3));
-                       presentHotelAdminPrompt();
+                    System.out.printf("******** %s ********\n", MainMenu.getMenuItemAtIndex(3));
+                    presentHotelAdminPrompt();
                     break;
                 case "5":
                 default:
@@ -73,6 +73,7 @@ public class HotelReservation {
 
         System.out.println(CommonMessages.GOODBYE_MESSAGE);
     }
+
     private static void presentHotelAdminPrompt() {
         AdminMenu.printAdminMenu();
 
@@ -82,18 +83,21 @@ public class HotelReservation {
         do {
             switch (scanner.next()) {
                 case "1":
-                    System.out.printf("******** %s ********", AdminMenu.getMenuItemAtIndex(0));
+                    System.out.printf("******** %s ********\n", AdminMenu.getMenuItemAtIndex(0));
                     seeAllCustomers();
                     break;
                 case "2":
-                    System.out.printf("******** %s ********", AdminMenu.getMenuItemAtIndex(1));
+                    System.out.printf("******** %s ********\n", AdminMenu.getMenuItemAtIndex(1));
+                    seeAllRooms();
+                case "3":
+                    System.out.printf("******** %s ********\n", AdminMenu.getMenuItemAtIndex(2));
                     seeAllReservations();
                     break;
-                case "3":
-                    System.out.printf("******** %s ********", AdminMenu.getMenuItemAtIndex(2));
+                case "4":
+                    System.out.printf("******** %s ********\n", AdminMenu.getMenuItemAtIndex(3));
                     addARoom();
                     break;
-                case "4":
+                case "5":
                 default:
                     presentHotelPrompt();
             }
@@ -109,16 +113,24 @@ public class HotelReservation {
         List<IRoom> rooms = new ArrayList<>();
 
         String[] instructions = new String[]{
-                CommonMessages.ENTER_ROOM_NUMBER,
-                CommonMessages.ENTER_ROOM_PRICE,
-                CommonMessages.ENTER_TYPE
+            CommonMessages.ENTER_ROOM_NUMBER,
+            CommonMessages.ENTER_ROOM_PRICE,
+            CommonMessages.ENTER_TYPE
         };
 
         Scanner scanner = new Scanner(System.in);
         String input;
         for (int i = 0; i < instructions.length; i++) {
             System.out.println("\n" + instructions[i]);
-            input = scanner.next();
+
+            insertBackCommand();
+
+            input = scanner.nextLine();
+            if (input.isEmpty()) {
+                i--;
+                System.out.println(CommonMessages.INVALID_INPUT);
+                continue;
+            }
             switch (i) {
                 case 0:
                     IRoom room = hotelResource.getRoom(input);
@@ -146,13 +158,15 @@ public class HotelReservation {
 
                     roomType = input.equals("1") ? RoomType.SINGLE : RoomType.DOUBLE;
                     break;
+                case 88:
+                    presentHotelAdminPrompt();
             }
         }
         IRoom room = new Room(roomNumber, Double.parseDouble(price), roomType);
         rooms.add(room);
         adminResource.addRoom(rooms);
 
-        presentHotelPrompt();
+        presentHotelAdminPrompt();
     }
 
     private static void seeAllReservations() {
@@ -164,13 +178,25 @@ public class HotelReservation {
         if (allCustomers.size() == 0) {
             System.out.println(CommonMessages.NO_ACCOUNTS_CREATED);
         } else {
-            for (Customer customer :
-                    allCustomers) {
+            for (Customer customer
+                    : allCustomers) {
                 System.out.println(customer.toString());
             }
         }
+        
     }
 
+    private static void seeAllRooms() {
+        Collection<IRoom> allIRooms = adminResource.getAllRooms();
+        if (allIRooms.size() == 0) {
+            System.out.println(CommonMessages.ROOMS_EMPTY);
+        } else {
+            for (IRoom room
+                    : allIRooms) {
+                System.out.println(room.toString());
+            }
+        }
+    }
 
     //<editor-fold defaultstate="collapsed" desc="[ helper functions ]">
     private static void seeReservations() {
@@ -178,16 +204,17 @@ public class HotelReservation {
         customerEmail = getCustomerInfo(customerEmail);
         Collection<Reservation> reservations = hotelResource.getCustomersReservations(customerEmail);
 
-        if(reservations.size() == 0)
+        if (reservations.size() == 0) {
             System.out.println(CommonMessages.RESERVATIONS_EMPTY);
-        for (Reservation reservation: reservations) {
+        }
+        for (Reservation reservation : reservations) {
             System.out.println(reservation.toString());
         }
     }
 
     private static String getCustomerInfo(String customerEmail) {
         String[] instructions = new String[]{
-                CommonMessages.ENTER_EMAIL
+            CommonMessages.ENTER_EMAIL
         };
 
         Scanner scanner = new Scanner(System.in);
@@ -195,7 +222,7 @@ public class HotelReservation {
         for (int i = 0; i < instructions.length; i++) {
             System.out.println("\n" + instructions[i]);
 
-            input = scanner.next();
+            input = scanner.nextLine();
             if (!Utilities.isValidEmail(input)) {
                 i--;
                 System.out.println(CommonMessages.INVALID_EMAIL);
@@ -217,62 +244,71 @@ public class HotelReservation {
     }
 
     private static void findRoom() {
-        String checkInDate = null;
-        String checkoutDate = null;
+        Date checkInDate = null;
+        Date checkoutDate = null;
         int recommendSearchDays = -1;
 
         String[] roomInstructions = new String[]{
-                CommonMessages.ENTER_CHECKIN_DATE,
-                CommonMessages.ENTER_CHECKOUT_DATE,
-                CommonMessages.ENTER_RECOMMENDED_SEARCH_DAYS
+            CommonMessages.ENTER_CHECKIN_DATE,
+            CommonMessages.ENTER_CHECKOUT_DATE,
+            CommonMessages.ENTER_RECOMMENDED_SEARCH_DAYS
         };
 
         Scanner scanner = new Scanner(System.in);
         String input;
-
-        for (int i = 0; i < roomInstructions.length; i++) {
-            System.out.println("\n" +roomInstructions[i]);
-
-            input = scanner.next();
-
-            switch (i) {
-                case 0:
-                    if (!Utilities.isValidDateStringSlashSeparated(input)) {
-                        System.out.println(CommonMessages.INVALID_INPUT_DATE);
-                        i--;
-                        break;
-                    }
-                    checkInDate = input;
-                    break;
-                case 1:
-                    if (!Utilities.isValidDateStringSlashSeparated(input)) {
-                        System.out.println(CommonMessages.INVALID_INPUT_DATE);
-                        i--;
-                        break;
-                    }
-                    checkoutDate = input;
-                    break;
-                case 2:
-                    if (!Utilities.isValidNumber(input)) {
-                        System.out.println(CommonMessages.INVALID_INPUT_MUST_BE_A_NUMBER);
-                        i--;
-                        break;
-                    }
-                    recommendSearchDays = Integer.parseInt(input);
-
-                    if (recommendSearchDays < 0) {
-                        System.out.println(CommonMessages.INVALID_INPUT_NON_NEGATIVE);
-                        i--;
-                        break;
-                    }
-                    break;
-            }
-        }
         try {
-            Date chckinDate = Utilities.getDateFormatter().parse(checkInDate);
-            Date chckoutDate = Utilities.getDateFormatter().parse(checkoutDate);
+            for (int i = 0; i < roomInstructions.length; i++) {
+                System.out.println("\n" + roomInstructions[i]);
+                insertBackCommand();
 
-            Collection<IRoom> rooms = hotelResource.findARoom(chckinDate, chckoutDate);
+                input = scanner.nextLine();
+                if (input.isEmpty()) {
+                    i--;
+                    System.out.println(CommonMessages.INVALID_INPUT);
+                    continue;
+                }
+                switch (i) {
+                    case 0:
+                        if (!Utilities.isValidDateStringSlashSeparated(input)) {
+                            System.out.println(CommonMessages.INVALID_INPUT_DATE);
+                            i--;
+                            break;
+                        }
+                        checkInDate = Utilities.getDateFormatter().parse(input);
+                        break;
+                    case 1:
+                        if (!Utilities.isValidDateStringSlashSeparated(input)) {
+                            System.out.println(CommonMessages.INVALID_INPUT_DATE);
+                            i--;
+                            break;
+                        }
+                        checkoutDate = Utilities.getDateFormatter().parse(input);
+                        if (checkInDate.compareTo(checkoutDate) >= 0) {
+                            System.out.println(CommonMessages.DATE_CHECKOUT_GREATER_THAN_DATE_CHECKIN);
+                            checkoutDate = null;
+                            i--;
+                            break;
+                        }
+                        break;
+                    case 2:
+                        if (!Utilities.isValidNumber(input)) {
+                            System.out.println(CommonMessages.INVALID_INPUT_MUST_BE_A_NUMBER);
+                            i--;
+                            break;
+                        }
+                        recommendSearchDays = Integer.parseInt(input);
+
+                        if (recommendSearchDays < 0) {
+                            System.out.println(CommonMessages.INVALID_INPUT_NON_NEGATIVE);
+                            i--;
+                            break;
+                        }
+                        break;
+                    case 88:
+                        presentHotelPrompt();
+                }
+            }
+            Collection<IRoom> rooms = hotelResource.findARoom(checkInDate, checkoutDate);
 
             for (IRoom room : rooms) {
                 System.out.println(room.toString());
@@ -283,7 +319,6 @@ public class HotelReservation {
             } else {
                 System.out.println(CommonMessages.ROOMS_EMPTY);
             }
-
         } catch (Exception ex) {
             System.out.println(CommonMessages.ERROR_SYSTEM_ERROR);
         }
@@ -292,13 +327,17 @@ public class HotelReservation {
 
     }
 
+    private static void insertBackCommand() {
+        System.out.println("\n-------\n" + CommonMessages.BACK_COMMAND);
+    }
+
     private static void reserveRoom() {
-        String wantToReserve =  CommonMessages.ROOM_RESERVATION_COMMAND;
-        String[] reserveIntructions = new String[] {
-                CommonMessages.ENTER_EMAIL,
-                CommonMessages.ENTER_ROOM_NUMBER,
-                CommonMessages.ENTER_CHECKIN_DATE,
-                CommonMessages.ENTER_CHECKOUT_DATE
+        String wantToReserve = CommonMessages.ROOM_RESERVATION_COMMAND;
+        String[] reserveIntructions = new String[]{
+            CommonMessages.ENTER_EMAIL,
+            CommonMessages.ENTER_ROOM_NUMBER,
+            CommonMessages.ENTER_CHECKIN_DATE,
+            CommonMessages.ENTER_CHECKOUT_DATE
         };
 
         String customerEmail, checkinDate, checkoutDate, roomNumber;
@@ -306,7 +345,7 @@ public class HotelReservation {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println(wantToReserve);
-        String input = scanner.next();
+        String input = scanner.nextLine();
 
         if (input.equals("1")) {
             for (int i = 0; i < reserveIntructions.length; i++) {
@@ -358,10 +397,10 @@ public class HotelReservation {
                 Date chkindate = Utilities.getDateFormatter().parse(checkinDate);
                 Date chkoutdate = Utilities.getDateFormatter().parse(checkoutDate);
 
-                hotelResource.bookARoom(customerEmail, hotelResource.getRoom(roomNumber), chkindate, chkoutdate );
+                hotelResource.bookARoom(customerEmail, hotelResource.getRoom(roomNumber), chkindate, chkoutdate);
 
                 System.out.println(CommonMessages.ROOM_RESERVED_SUCCESSFULLY);
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 System.out.println(CommonMessages.ERROR_SYSTEM_ERROR);
             }
         }
@@ -369,23 +408,28 @@ public class HotelReservation {
         reserveRoom();
     }
 
-    private static  void createAccount() {
+    private static void createAccount() {
         String email = null;
         String lastname = null;
         String firstName = null;
 
         String[] instructions = new String[]{
-                CommonMessages.ENTER_FIRSTNAME,
-                CommonMessages.ENTER_LASTNAME,
-                CommonMessages.ENTER_EMAIL
+            CommonMessages.ENTER_FIRSTNAME,
+            CommonMessages.ENTER_LASTNAME,
+            CommonMessages.ENTER_EMAIL
         };
 
         Scanner scanner = new Scanner(System.in);
         String input;
         for (int i = 0; i < instructions.length; i++) {
             System.out.println("\n" + instructions[i]);
-            input = scanner.next();
-            switch (i){
+            input = scanner.nextLine();
+            if (input.isEmpty()) {
+                i--;
+                System.out.println(CommonMessages.INVALID_INPUT);
+                continue;
+            }
+            switch (i) {
                 case 0:
                     firstName = input;
                     break;
@@ -393,6 +437,11 @@ public class HotelReservation {
                     lastname = input;
                     break;
                 case 2:
+                    if (!Utilities.isValidEmail(input)) {
+                        i--;
+                        System.out.println(CommonMessages.INVALID_EMAIL);
+                        continue;
+                    }
                     email = input;
                     break;
             }

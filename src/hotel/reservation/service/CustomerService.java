@@ -19,13 +19,13 @@ import java.util.Map;
  */
 public class CustomerService {
 
-    private final Map<String, Customer> CUSOTMERS = new HashMap<>();
+    private static final Map<String, Customer>  CUSTOMERS = new HashMap<>();
     private static CustomerService customerService;
 
 
     public void addCustomer(String email, String firstName, String lastName) {
         try {
-            CUSOTMERS.put(email, new Customer(firstName, lastName, email));
+            CUSTOMERS.put(email, new Customer(firstName, lastName, email));
             System.out.println(CommonMessages.CUSTOMER_CREATED);
         } catch (Exception e) {
             System.out.println(CommonMessages.CUSTOMER_CREAT_FAILED);
@@ -33,11 +33,11 @@ public class CustomerService {
     }
     
     public Customer getCustomer(String customerEmail) {
-        return CUSOTMERS.getOrDefault(customerEmail, null);
+        return CUSTOMERS.getOrDefault(customerEmail, null);
     }
     
     public Collection<Customer> getAllCustomers() {
-        return CUSOTMERS.values();
+        return CUSTOMERS.values();
     }
     
     public static CustomerService getInstance() {
